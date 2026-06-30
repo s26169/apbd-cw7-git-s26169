@@ -1,0 +1,41 @@
+@model List<Ticket>
+@{
+    ViewData["Title"] = "Tickets";
+}
+
+<h1>Tickets</h1>
+
+@if (!Model.Any())
+{
+    <p>No tickets yet. <a href="/Tickets/Create">Create the first one</a>.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.Id</td>
+                <td>@ticket.Title</td>
+                <td>
+                    <span class="status @(ticket.Status == "Closed" ? "status-closed" : "status-open")">
+                        @ticket.Status
+                    </span>
+                </td>
+                <td>@ticket.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                <td><a href="/Tickets/Details/@ticket.Id">Details</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,43 @@
+@model Ticket
+@{
+    ViewData["Title"] = $"Ticket #{Model.Id}";
+}
+
+<h1>@Model.Title</h1>
+
+<p>
+    <span class="status @(Model.Status == "Closed" ? "status-closed" : "status-open")">
+        @Model.Status
+    </span>
+    &nbsp; Created @Model.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+</p>
+
+<p>@Model.Description</p>
+
+@if (Model.Status != "Closed")
+{
+    <form asp-action="Close" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn-close">Close ticket</button>
+    </form>
+}
+
+<h2>Comments</h2>
+
+@if (!Model.Comments.Any())
+{
+    <p>No comments.</p>
+}
+else
+{
+    @foreach (var comment in Model.Comments.OrderBy(c => c.CreatedAt))
+    {
+        <div class="comment">
+            <strong>@comment.Author</strong>
+            <small>&nbsp;@comment.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</small>
+            <p>@comment.Content</p>
+        </div>
+    }
+}
+
+<p><a href="/Tickets">&larr; Back to list</a></p>
